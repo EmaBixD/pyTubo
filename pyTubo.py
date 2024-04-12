@@ -3,15 +3,17 @@ from pytube import YouTube, Playlist
 
 def menu():
     os.system('cls')
-    print("YouTube tool by Ema\n\n┌─────────────────────┬────────────────────────┬─────────────┐\n│ 1: Video downloader │ 2: Playlist downloader │ Other: exit │\n├─────────────────────┴────────────────────────┴─────────────┘")
+    print("YouTube tool by Ema\n\n┌─────────────────────┬────────────────────────┬─────────────┐\n│ 1: Video downloader │ 2: Playlist downloader │ Enter: exit │\n├─────────────────────┴────────────────────────┴─────────────┘")
     choice=input("└ ")
     if choice == "1":
         video_download()
     elif choice == "2":
         playlist_download()
-    else:
+    elif choice == "":
         os.system('cls')
         exit()
+    else:
+        menu()
         
 def on_progress(video_stream, total_size, bytes_remaining):
     total_size = video_stream.filesize
@@ -46,12 +48,12 @@ def video_download():
         download_video.download()
     else:
         download_video.download(path)
-    input("\nDone! Press enter to exit ")
+    input("\n\nDone! Press enter to exit ")
     menu()
     
 def playlist_download():
     os.system('cls')
-    print("YT playlist downloader\n")
+    print("YT Playlist downloader\n")
     playlist = Playlist(input("[+] Enter playlist URL: "))
     path = input("\n[+] Enter download path (leave blank for current): ")
     download_option = int(input("\n[+] Download options max quality available ( 1: Video mp4 | 2: Audio webm ): "))
@@ -70,7 +72,7 @@ def playlist_download():
             elif download_option == 2:
                 yt.streams.filter(only_audio=True).order_by('abr').desc().first().download(path)
         print()
-    input("Done! Press enter to exit ")
+    input("\nDone! Press enter to exit ")
     menu()
 
 os.system('cls')
