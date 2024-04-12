@@ -3,10 +3,7 @@ from pytube import YouTube, Playlist
 
 def menu():
     os.system('cls')
-    print("YouTube tool by Ema\n")
-    print("┌─────────────────────┬────────────────────────┬─────────────┐")
-    print("│ 1: Video downloader │ 2: Playlist downloader │ Other: exit │")
-    print("├─────────────────────┴────────────────────────┴─────────────┘")
+    print("YouTube tool by Ema\n\n┌─────────────────────┬────────────────────────┬─────────────┐\n│ 1: Video downloader │ 2: Playlist downloader │ Other: exit │\n├─────────────────────┴────────────────────────┴─────────────┘")
     choice=input("└ ")
     if choice == "1":
         video_download()
@@ -34,28 +31,21 @@ def convert_time(length):
 def video_download():
     os.system('cls')
     print("YT Video downloader\n")
-
     yt = YouTube(input("[+] Enter video URL: "), on_progress_callback=on_progress)
     print()
     path = input("[+] Enter download path (leave blank for current): ")
     print()
-    
     videos=yt.streams.order_by('resolution')
     video=list(enumerate(videos))
     for i in video:
         print(i)
-
     download_option = int(input("[+] Choose format by number: "))
     download_video = videos[download_option]
-
     print("\n[!] Downloading:",yt.title,"| Duration:",convert_time(yt.length),"| Ctrl+C to quit")
-    #video = yt.streams.get_highest_resolution()
-
     if path == "":
         download_video.download()
     else:
         download_video.download(path)
-        
     input("\nDone! Press enter to exit ")
     menu()
     
@@ -64,18 +54,24 @@ def playlist_download():
     print("YT playlist downloader\n")
     playlist = Playlist(input("[+] Enter playlist URL: "))
     path = input("\n[+] Enter download path (leave blank for current): ")
+    download_option = int(input("\n[+] Download options max quality available ( 1: Video mp4 | 2: Audio webm ): "))
     print("\n[!] Downloading:",playlist.title,"|",len(playlist.videos),"videos | Ctrl+C to quit")
     for video in playlist:
         yt = YouTube(video, on_progress_callback=on_progress)
         print("\n[-] Downloading",video,"| Duration:",convert_time(yt.length))
         if path == "":
-            yt.streams.get_highest_resolution().download()
+            if download_option == 1:
+                yt.streams.get_highest_resolution().download()
+            elif download_option == 2:
+                yt.streams.filter(only_audio=True).order_by('abr').desc().first().download()
         else:
-            yt.streams.get_highest_resolution().download(path)
-        print("\n")
-        
+            if download_option == 1:
+                yt.streams.get_highest_resolution().download(path)
+            elif download_option == 2:
+                yt.streams.filter(only_audio=True).order_by('abr').desc().first().download(path)
+        print()
     input("Done! Press enter to exit ")
     menu()
-    
+
 os.system('cls')
 menu()
